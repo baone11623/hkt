@@ -252,3 +252,9 @@ onMounted(async () => {
   }
 });
 </script>
+
+<style scoped>
+.card {
+  @apply p-6;
+}
+</style>
