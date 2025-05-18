@@ -68,6 +68,13 @@ const routes = [
     component: () => import("../views/dashboard/ProfileView.vue"),
     meta: { requiresAuth: true },
   },
+
+  {
+    path: "/dashboard/posts/edit/:id",
+    name: "EditPost",
+    component: () => import("../views/dashboard/EditPostView.vue"),
+    meta: { requiresAuth: true },
+  },
   {
     path: "/:pathMatch(.*)*",
     name: "NotFound",

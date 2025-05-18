@@ -110,7 +110,7 @@ import {
   Loader2,
 } from "lucide-vue-next";
 import { formatDate } from "../../helper/formatDate";
-
+import { api } from "../../helper/api";
 const postsStore = usePostsStore();
 const userStore = useUserStore();
 const userPosts = ref<any[]>([]);
@@ -118,7 +118,9 @@ const isLoading = ref(true);
 
 async function confirmDelete(post: any) {
   if (confirm(`Are you sure you want to delete "${post.title}"?`)) {
-    await postsStore.deletePost(post.id);
+    // await postsStore.deletePost(post.id);
+    console.log("post.id :", post.id);
+    await api.fetch(`post/delete/${post.id}`, "", "DELETE");
     userPosts.value = userPosts.value.filter((p) => p.id !== post.id);
   }
 }

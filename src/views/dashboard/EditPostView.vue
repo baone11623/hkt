@@ -17,7 +17,10 @@
 
         <form @submit.prevent="updatePost" class="space-y-6">
           <div>
-            <label for="title" class="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              for="title"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
               Title
             </label>
             <input
@@ -31,7 +34,10 @@
           </div>
 
           <div>
-            <label for="excerpt" class="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              for="excerpt"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
               Excerpt
             </label>
             <textarea
@@ -45,7 +51,10 @@
           </div>
 
           <div>
-            <label for="content" class="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              for="content"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
               Content
             </label>
             <textarea
@@ -59,7 +68,10 @@
           </div>
 
           <div>
-            <label for="coverImage" class="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              for="coverImage"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
               Cover Image URL
             </label>
             <input
@@ -71,13 +83,17 @@
             />
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">
                 Categories
               </label>
               <div class="space-y-2">
-                <label v-for="category in categories" :key="category" class="flex items-center">
+                <label
+                  v-for="category in categories"
+                  :key="category"
+                  class="flex items-center"
+                >
                   <input
                     type="checkbox"
                     :value="category"
@@ -90,7 +106,10 @@
             </div>
 
             <div>
-              <label for="tags" class="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                for="tags"
+                class="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Tags
               </label>
               <input
@@ -118,7 +137,7 @@
                 </span>
               </div>
             </div>
-          </div>
+          </div> -->
 
           <div class="flex justify-end space-x-4">
             <router-link to="/dashboard/posts" class="btn btn-ghost">
@@ -139,7 +158,9 @@
       <div v-else class="text-center py-12">
         <FileX class="w-16 h-16 mx-auto text-gray-300 mb-4" />
         <h2 class="text-xl font-semibold text-gray-700 mb-2">Post Not Found</h2>
-        <p class="text-gray-600 mb-6">The post you're trying to edit doesn't exist or has been removed.</p>
+        <p class="text-gray-600 mb-6">
+          The post you're trying to edit doesn't exist or has been removed.
+        </p>
         <router-link to="/dashboard/posts" class="btn btn-primary">
           Back to Posts
         </router-link>
@@ -149,52 +170,67 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { usePostsStore } from '../../stores/posts';
-import { ArrowLeft, X, Loader2, FileX } from 'lucide-vue-next';
+import { ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { usePostsStore } from "../../stores/posts";
+import { ArrowLeft, X, Loader2, FileX } from "lucide-vue-next";
+import { api } from "../../helper/api";
 
 const route = useRoute();
 const router = useRouter();
 const postsStore = usePostsStore();
 
-const post = ref<any>(null);
+const post = ref<any>({
+  id: "",
+  title: "",
+  excerpt: "",
+  content: "",
+  coverImage: "",
+  categories: [],
+  tags: [],
+});
 const isLoading = ref(true);
 const isSubmitting = ref(false);
-const tagsInput = ref('');
+const tagsInput = ref("");
 
 const categories = [
-  'Programming',
-  'Web Design',
-  'Frontend',
-  'Backend',
-  'JavaScript',
-  'Vue.js',
-  'React',
-  'Node.js'
+  "Programming",
+  "Web Design",
+  "Frontend",
+  "Backend",
+  "JavaScript",
+  "Vue.js",
+  "React",
+  "Node.js",
 ];
 
 function addTag() {
   if (!post.value) return;
-  const tags = tagsInput.value.split(',').map(tag => tag.trim()).filter(Boolean);
+  const tags = tagsInput.value
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean);
   post.value.tags = [...new Set([...post.value.tags, ...tags])];
-  tagsInput.value = '';
+  tagsInput.value = "";
 }
 
 function removeTag(tagToRemove: string) {
   if (!post.value) return;
-  post.value.tags = post.value.tags.filter(tag => tag !== tagToRemove);
+  post.value.tags = post.value.tags.filter(
+    (tag: string) => tag !== tagToRemove
+  );
 }
 
 async function updatePost() {
   if (!post.value) return;
-  
+
   isSubmitting.value = true;
+  console.log("Updating post:", post.value);
   try {
-    await postsStore.updatePost(post.value.id, post.value);
-    router.push('/dashboard/posts');
+    await api.fetch("update/post", { ...post.value });
+    router.push("/dashboard/posts");
   } catch (error) {
-    console.error('Failed to update post:', error);
+    console.error("Failed to update post:", error);
   } finally {
     isSubmitting.value = false;
   }
@@ -203,12 +239,23 @@ async function updatePost() {
 onMounted(async () => {
   const postId = route.params.id as string;
   try {
-    const fetchedPost = await postsStore.fetchPostById(postId);
-    if (fetchedPost) {
-      post.value = { ...fetchedPost };
+    const fetchedPost = await api.fetch(`post/${postId}`);
+    const data = fetchedPost.data;
+    console.log("fetchedPost :", fetchedPost);
+    if (data) {
+      Object.assign(post.value, {
+        id: data.id,
+        title: data.title,
+        excerpt: data.excerpt,
+        content: data.content,
+        coverImage: data.cover_image,
+        categories: [data.category],
+        tags: data.tags || [],
+      });
+      console.log("Fetched post:", post.value);
     }
   } catch (error) {
-    console.error('Failed to fetch post:', error);
+    console.error("Failed to fetch post:", error);
   } finally {
     isLoading.value = false;
   }
