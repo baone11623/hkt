@@ -4,12 +4,13 @@ import { api } from "../helper/api";
 import { toast } from "vue3-toastify";
 
 interface User {
-  id: string;
+  id?: string;
   username: string;
   email: string;
   avatarUrl?: string;
-  createdAt: string;
-  score: number;
+  createdAt?: string;
+  gender?: string;
+  score?: number;
   token?: string;
 }
 
@@ -99,9 +100,51 @@ export const useUserStore = defineStore("user", () => {
     }
   }
 
-  async function updateProfile(userData: Partial<User>) {
-    if (currentUser.value) {
-      currentUser.value = { ...currentUser.value, ...userData };
+  async function updateProfile(userData: {
+    username: string;
+    email: string;
+    gender?: string;
+  }) {
+    if (!currentUser.value) return false;
+
+    isLoading.value = true;
+    error.value = null;
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    try {
+      const payload = {
+        id: user.id,
+        username: userData.username,
+        email: userData.email,
+        gender: userData.gender || "other",
+      };
+      // Gọi API update/user
+      const res = await api.fetch("update/user", payload, "PUT");
+      if (!res.success) {
+        toast.error(res.message);
+        return false;
+      } else {
+        // Cập nhật currentUser với dữ liệu mới từ server (nếu server trả về)
+
+        setUser({
+          username: payload.username,
+          email: payload.email,
+          gender: payload.gender,
+        });
+
+        const userData = { ...user, ...payload };
+        console.log("userData :", userData);
+
+        localStorage.setItem("user", JSON.stringify(userData));
+        toast.success("Profile updated successfully!");
+        return true;
+      }
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : "An error occurred";
+      toast.error(error.value);
+      return false;
+    } finally {
+      isLoading.value = false;
     }
   }
 

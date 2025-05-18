@@ -105,8 +105,8 @@
                   class="h-16 w-16 mr-4 bg-gray-200 rounded overflow-hidden flex-shrink-0"
                 >
                   <img
-                    v-if="post.coverImage"
-                    :src="post.coverImage"
+                    v-if="post.cover_image"
+                    :src="post.cover_image"
                     :alt="post.title"
                     class="h-full w-full object-cover"
                   />
@@ -130,9 +130,9 @@
                     {{ post.excerpt }}
                   </p>
                   <div class="flex items-center text-xs text-gray-500 mt-2">
-                    <span>{{ formatDate(post.updatedAt) }}</span>
+                    <span>{{ formatDate(post.updated_at) }}</span>
                     <span class="mx-2">•</span>
-                    <span>{{ post.commentsCount }} comments</span>
+                    <span>{{ post.comments_count }} comments</span>
                   </div>
                 </div>
                 <div class="ml-4 flex-shrink-0">
@@ -230,7 +230,9 @@ const userPosts = ref<any[]>([]);
 const recentPosts = computed(() => userPosts.value.slice(0, 3));
 
 const totalComments = computed(() => {
-  return userPosts.value.reduce((total, post) => total + post.commentsCount, 0);
+  return (
+    userPosts.value.reduce((total, post) => total + post.commentsCount, 0) || 0
+  );
 });
 
 const totalLikes = computed(() => {
@@ -248,7 +250,17 @@ onMounted(async () => {
   // Get posts by current user
   if (userStore.currentUser) {
     const authorId = userStore.currentUser.id;
-    userPosts.value = postsStore.getPostsByAuthor.value(authorId);
+    // userPosts.value = postsStore.getPostsByAuthor.value(authorId);
+  }
+});
+
+onMounted(async () => {
+  if (userStore.currentUser) {
+    await postsStore.fetchPosts();
+    userPosts.value = postsStore.getPostsByAuthor(userStore.currentUser.id);
+    console.log("userStore.currentUser.id :", userStore.currentUser.id);
+
+    console.log("userPosts.value :", userPosts.value);
   }
 });
 </script>

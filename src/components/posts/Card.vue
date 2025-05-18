@@ -6,16 +6,16 @@
   >
     <div class="h-48 w-full overflow-hidden mb-4">
       <img
-        :src="post.coverImage"
+        :src="post.cover_image"
         :alt="post.title"
         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
       />
     </div>
     <div class="space-y-3 px-6 pb-6">
       <div class="flex items-center text-sm text-gray-500">
-        <span>{{ formatDate(post.createdAt) }}</span>
+        <span>{{ formatDate(post.created_at) }}</span>
         <span class="mx-2">•</span>
-        <span>{{ post.readTime }} min read</span>
+        <span>{{ post.read_time }} min read</span>
       </div>
       <h3 class="text-xl font-semibold line-clamp-2">
         <router-link
@@ -33,13 +33,13 @@
           <div
             class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center text-primary-700"
           >
-            {{ post.authorName.charAt(0) }}
+            {{ post.author_name.charAt(0) }}
           </div>
-          <span class="ml-2 text-sm font-medium">{{ post.authorName }}</span>
+          <span class="ml-2 text-sm font-medium">{{ post.author_name }}</span>
         </div>
         <div class="flex items-center text-sm text-gray-500">
           <MessageSquare class="w-4 h-4 mr-1" />
-          {{ post.commentsCount }}
+          {{ post.comments_count }}
         </div>
       </div>
     </div>
