@@ -176,25 +176,6 @@
           </form>
         </div>
       </div>
-
-      <!-- Danger Zone -->
-      <div class="mt-8">
-        <h2 class="text-xl font-semibold text-red-600 mb-4">Danger Zone</h2>
-        <div class="bg-red-50 rounded-lg p-6">
-          <h3 class="text-lg font-medium text-red-800 mb-2">Delete Account</h3>
-          <p class="text-red-600 mb-4">
-            Once you delete your account, there is no going back. Please be
-            certain.
-          </p>
-          <button
-            type="button"
-            class="btn bg-red-600 text-white hover:bg-red-700 focus:ring-red-500"
-            @click="confirmDeleteAccount"
-          >
-            Delete Account
-          </button>
-        </div>
-      </div>
     </div>
   </div>
 </template>

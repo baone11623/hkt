@@ -4,7 +4,7 @@ import { api } from "../helper/api";
 import { toast } from "vue3-toastify";
 
 interface User {
-  id: string;
+  id?: string;
   username: string;
   email: string;
   avatarUrl?: string;
@@ -109,10 +109,11 @@ export const useUserStore = defineStore("user", () => {
 
     isLoading.value = true;
     error.value = null;
+    const user = JSON.parse(localStorage.getItem("user"));
 
     try {
       const payload = {
-        id: currentUser.value.id,
+        id: user.id,
         username: userData.username,
         email: userData.email,
         gender: userData.gender || "other",
@@ -124,13 +125,17 @@ export const useUserStore = defineStore("user", () => {
         return false;
       } else {
         // Cập nhật currentUser với dữ liệu mới từ server (nếu server trả về)
-        const updated = res.data;
+
         setUser({
-          id: updated.id,
-          username: updated.username,
-          email: updated.email,
-          gender: updated.gender,
+          username: payload.username,
+          email: payload.email,
+          gender: payload.gender,
         });
+
+        const userData = { ...user, ...payload };
+        console.log("userData :", userData);
+
+        localStorage.setItem("user", JSON.stringify(userData));
         toast.success("Profile updated successfully!");
         return true;
       }
