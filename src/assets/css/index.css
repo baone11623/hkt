@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Custom color variables */
+    --color-primary: 30, 58, 138; /* Navy */
+    --color-secondary: 5, 150, 105; /* Emerald */
+    --color-accent: 245, 158, 11; /* Amber */
+    --color-success: 16, 185, 129; /* Green */
+    --color-warning: 245, 158, 11; /* Amber */
+    --color-error: 239, 68, 68; /* Red */
+  }
+
+  h1 {
+    @apply text-3xl font-bold leading-tight md:text-4xl;
+  }
+
+  h2 {
+    @apply text-2xl font-bold leading-tight md:text-3xl;
+  }
+
+  h3 {
+    @apply text-xl font-semibold leading-tight md:text-2xl;
+  }
+
+  h4 {
+    @apply text-lg font-semibold leading-tight md:text-xl;
+  }
+
+  p {
+    @apply leading-relaxed;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+
+  .btn-primary {
+    @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary-600 text-white hover:bg-secondary-700 focus:ring-secondary-500;
+  }
+
+  .btn-accent {
+    @apply bg-accent-500 text-white hover:bg-accent-600 focus:ring-accent-400;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-gray-300;
+  }
+
+  .card {
+    @apply rounded-lg bg-white shadow-sm transition-shadow hover:shadow-md;
+  }
+
+  .input {
+    @apply rounded-md border border-gray-300 px-4 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500;
+  }
+}
