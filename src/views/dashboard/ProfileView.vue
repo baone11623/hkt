@@ -157,45 +157,6 @@
               </div>
             </div>
 
-            <div class="border-t border-gray-200 pt-6">
-              <h3 class="text-lg font-semibold mb-4">Email Preferences</h3>
-              <div class="space-y-4">
-                <label class="flex items-start">
-                  <input
-                    v-model="profileData.emailPreferences.newsletter"
-                    type="checkbox"
-                    class="mt-1 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
-                  />
-                  <span class="ml-3">
-                    <span class="block text-sm font-medium text-gray-700"
-                      >Newsletter</span
-                    >
-                    <span class="block text-sm text-gray-500"
-                      >Receive our weekly newsletter with the latest
-                      updates.</span
-                    >
-                  </span>
-                </label>
-
-                <label class="flex items-start">
-                  <input
-                    v-model="profileData.emailPreferences.notifications"
-                    type="checkbox"
-                    class="mt-1 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
-                  />
-                  <span class="ml-3">
-                    <span class="block text-sm font-medium text-gray-700"
-                      >Notifications</span
-                    >
-                    <span class="block text-sm text-gray-500"
-                      >Get notified about comments and likes on your
-                      posts.</span
-                    >
-                  </span>
-                </label>
-              </div>
-            </div>
-
             <div class="flex justify-end space-x-4">
               <button type="button" class="btn btn-ghost" @click="resetForm">
                 Reset
