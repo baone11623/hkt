@@ -78,7 +78,7 @@
           <!-- Comments section -->
           <div class="mt-12">
             <h3 class="text-2xl font-bold mb-6">
-              Comments ({{ post.comments_count }})
+              Comments ({{ comments.length }})
             </h3>
 
             <!-- Comment form -->
@@ -115,12 +115,9 @@
             </div>
 
             <!-- Comments list -->
-            <div
-              v-if="post.comments && post.comments.length > 0"
-              class="space-y-6"
-            >
+            <div v-if="comments.length > 0" class="space-y-6">
               <div
-                v-for="comment in post.comments"
+                v-for="comment in comments"
                 :key="comment.id"
                 class="bg-white p-4 rounded-lg border border-gray-100"
               >
@@ -178,6 +175,7 @@ const userStore = useUserStore();
 
 // State
 const post = ref<any>(null);
+const comments = ref<any[]>([]);
 const isLoading = ref(true);
 const newComment = ref("");
 const isSubmittingComment = ref(false);
@@ -193,15 +191,16 @@ async function submitComment() {
   const comment = {
     postId: post.value.id,
     userId: userStore.currentUser.id,
-    username: userStore.currentUser.username,
     content: newComment.value.trim(),
   };
 
   try {
-    await postsStore.addComment(post.value.id, comment);
+    console.log(" comment1232112323 :", comment);
+    // await postsStore.addComment(post.value.id, comment);
+    await api.fetch(`comment/create`, comment); // ✅ Sử dụng hàm api.post
     newComment.value = "";
     // Refresh post to get updated comments
-    post.value = await postsStore.fetchPostById(route.params.id as string);
+    // post.value = await postsStore.fetchPostById(route.params.id as string);
   } catch (error) {
     console.error("Failed to submit comment", error);
   } finally {
@@ -217,6 +216,8 @@ onMounted(async () => {
 
     if (fetchedPost) {
       post.value = fetchedPost.data;
+      comments.value = fetchedPost.comments;
+      console.log("comments.value :", comments.value);
     } else {
       console.error("Post not found");
     }
