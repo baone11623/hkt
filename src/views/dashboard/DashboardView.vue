@@ -248,7 +248,7 @@ onMounted(async () => {
   // Get posts by current user
   if (userStore.currentUser) {
     const authorId = userStore.currentUser.id;
-    userPosts.value = postsStore.getPostsByAuthor.value(authorId);
+    // userPosts.value = postsStore.getPostsByAuthor.value(authorId);
   }
 });
 </script>

@@ -8,8 +8,9 @@ interface User {
   username: string;
   email: string;
   avatarUrl?: string;
-  createdAt: string;
-  score: number;
+  createdAt?: string;
+  gender?: string;
+  score?: number;
   token?: string;
 }
 
@@ -99,9 +100,46 @@ export const useUserStore = defineStore("user", () => {
     }
   }
 
-  async function updateProfile(userData: Partial<User>) {
-    if (currentUser.value) {
-      currentUser.value = { ...currentUser.value, ...userData };
+  async function updateProfile(userData: {
+    username: string;
+    email: string;
+    gender?: string;
+  }) {
+    if (!currentUser.value) return false;
+
+    isLoading.value = true;
+    error.value = null;
+
+    try {
+      const payload = {
+        id: currentUser.value.id,
+        username: userData.username,
+        email: userData.email,
+        gender: userData.gender || "other",
+      };
+      // Gọi API update/user
+      const res = await api.fetch("update/user", payload, "PUT");
+      if (!res.success) {
+        toast.error(res.message);
+        return false;
+      } else {
+        // Cập nhật currentUser với dữ liệu mới từ server (nếu server trả về)
+        const updated = res.data;
+        setUser({
+          id: updated.id,
+          username: updated.username,
+          email: updated.email,
+          gender: updated.gender,
+        });
+        toast.success("Profile updated successfully!");
+        return true;
+      }
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : "An error occurred";
+      toast.error(error.value);
+      return false;
+    } finally {
+      isLoading.value = false;
     }
   }
 
